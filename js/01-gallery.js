@@ -5,11 +5,11 @@ const galleryCreated = createGallery(galleryItems);
 const galleryLink = document.querySelectorAll(".gallery__link");
 gallery.insertAdjacentHTML("beforeend", galleryCreated);
 gallery.addEventListener("click", galleryClick);
-for (const link of galleryLink) {
-  link.addEventListener("click", (event) => {
+
+  gallery.addEventListener("click", (event) => {
     event.preventDefault();
   });
-}
+
 function createGallery(galleryItems) {
   return galleryItems
     .map(({ preview, original, description }) => {
