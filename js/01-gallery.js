@@ -1,37 +1,41 @@
-import { galleryItems } from './gallery-items.js';
-// Change code below this line
+
+import { galleryItems } from "./gallery-items.js";
+// import * as basicLightbox from "basiclightbox";
+
 const gallery = document.querySelector(".gallery");
-const galleryCreated = createGallery(galleryItems);
-const galleryLink = document.querySelectorAll(".gallery__link");
-gallery.insertAdjacentHTML("beforeend", galleryCreated);
-gallery.addEventListener("click", galleryClick);
 
-  gallery.addEventListener("click", (event) => {
-    event.preventDefault();
-  });
+const galleryItem = galleryItems
+  .map(
+    (item) =>
+      `<div class="gallery__item"><a class="gallery__link" href="${item.original}"><img  class="gallery__image" src="${item.preview}" data-source="${item.original}" alt="${item.description}" loading="lazy"
+  />
+</a>
+  </div>`
+  )
+  .join("");
 
-function createGallery(galleryItems) {
-  return galleryItems
-    .map(({ preview, original, description }) => {
-      gallery.insertAdjacentHTML(
-        "beforeend",
-        `<div class = "gallery__item"><a class="gallery__link" href=${original}><img class = "gallery__image"src = ${preview} data-source=${original} alt = "${description}"></a></div> `
-      );
-    })
-    .join("");
-}
-function galleryClick(event) {
-  const galleryPic = event.target;
-  const orgPicture = galleryPic.dataset.source;
-  if (!galleryPic.classList.contains("gallery__image")) {
+gallery.insertAdjacentHTML("beforeend", galleryItem);
+
+const image = document.querySelector(".gallery__image");
+
+gallery.addEventListener("click", imgHandlerClick);
+
+function imgHandlerClick(event) {
+  event.preventDefault();
+  if (event.target.nodeName !== "IMG") {
     return;
   }
 
-  basicLightbox
-    .create(
-      `
-    <img src= ${orgPicture} alt =${galleryPic.getAttribute("alt")} >
-`
-    )
-    .show();
+  const modal = basicLightbox.create(
+    `<img src= "${event.target.dataset.source}">`
+  );
+  modal.show();
+
+  document.addEventListener("keydown", presskey);
+
+  function presskey(event) {
+    if (event.key === "Escape") {
+      modal.close();
+    }
+  }
 }
